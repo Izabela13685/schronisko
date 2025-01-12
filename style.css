@@ -1,51 +1,208 @@
-/* Styl formularza ogłoszeń */
-#announcements-form-wrapper {
-  margin-bottom: 20px;
-}
-
-#announcements-form-wrapper form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#announcements-form-wrapper label {
-  font-weight: bold;
-}
-
-#announcements-form-wrapper input,
-#announcements-form-wrapper select,
-#announcements-form-wrapper textarea {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1em;
-}
-
-#announcements-form-wrapper button {
-  background-color: #333;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 1em;
-  border-radius: 4px;
-}
-
-#announcements-form-wrapper button:hover {
-  background-color: #555;
-}
-
-.announcement-item {
-  border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-}
-
-.announcement-item img {
-  max-width: 100%;
-  border-radius: 4px;
-}
+/* -------------------------- */
+/* 1. Ogólne style            */
+/* -------------------------- */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fafafa;
+    color: #333;
+    position: relative;
+  }
+  
+  /* Baner cookies */
+  #cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9999;
+  }
+  #cookie-banner p {
+    margin: 0;
+  }
+  #cookie-banner button {
+    background: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  #cookie-banner button:hover {
+    background: #ddd;
+  }
+  
+  /* -------------------------- */
+  /* 2. Slider (baner)          */
+  /* -------------------------- */
+  #toolbar {
+    background-color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  #banner {
+    width: 700px; 
+    height: 350px;
+    margin: 0 auto;
+    position: relative;
+  }
+  #banner img {
+    width: 700px;
+    height: 350px;
+    display: block;
+    margin: 0 auto;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  #banner-dots {
+    margin-top: 8px;
+  }
+  #banner-dots span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: #bbb;
+    border-radius: 50%;
+    margin: 0 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #banner-dots span.active {
+    background-color: #333;
+  }
+  
+  /* -------------------------- */
+  /* 3. Nawigacja               */
+  /* -------------------------- */
+  nav {
+    background-color: #eee;
+    padding: 15px;
+    text-align: center;
+  }
+  nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* -------------------------- */
+  /* 4. Główna sekcja (#app)    */
+  /* -------------------------- */
+  #app {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  /* -------------------------- */
+  /* 5. Stopka (footer)         */
+  /* -------------------------- */
+  #page-footer {
+    background-color: #f5f5f5;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-left img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .footer-center a {
+    margin: 0 8px;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9em;
+  }
+  .footer-center a:hover {
+    text-decoration: underline;
+  }
+  .footer-right {
+    font-size: 0.9em;
+  }
+  #page-footer select {
+    margin-left: 6px;
+    padding: 3px;
+  }
+  
+  /* -------------------------- */
+  /* 6. Formularz ogłoszeń      */
+  /* -------------------------- */
+  .form-row {
+    margin: 10px 0;
+  }
+  .form-row label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  #announcements-list {
+    margin-top: 20px;
+  }
+  .announcement-item {
+    border: 1px solid #ccc;
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+    position: relative;
+  }
+  .announcement-item h4 {
+    margin: 0 0 5px;
+    font-size: 1.1em;
+  }
+  .announcement-category {
+    font-size: 0.9em;
+    color: #666;
+  }
+  .announcement-description {
+    margin-top: 5px;
+  }
+  .announcement-date {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px;
+  }
+  /* Przycisk usuwania */
+  .remove-announcement-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #cc0000;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 8px;
+    cursor: pointer;
+  }
+  .remove-announcement-btn:hover {
+    background-color: #ff3333;
+  }
+  
+  /* -------------------------- */
+  /* 7. Logowanie               */
+  /* -------------------------- */
+  #login-message {
+    margin-top: 10px;
+    color: red;
+  }
 
