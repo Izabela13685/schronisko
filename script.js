@@ -1,4 +1,6 @@
-// Baner cookies
+/****************************************************************************/
+/* 1. Baner cookies                                                         */
+/****************************************************************************/
 const cookieBanner = document.getElementById('cookie-banner');
 if (localStorage.getItem('cookieAccepted')) {
   cookieBanner.style.display = 'none';
@@ -9,74 +11,102 @@ if (localStorage.getItem('cookieAccepted')) {
   });
 }
 
-// Slider
+/****************************************************************************/
+/* 2. Slider (baner)                                                        */
+/****************************************************************************/
 const bannerImages = ['img/pies01.jpg', 'img/kot01.jpg', 'img/front01.jpg'];
 let currentBannerIndex = 0;
 
 function updateBanner() {
-  const bannerImageElement = document.getElementById('banner-image');
-  bannerImageElement.src = bannerImages[currentBannerIndex];
-  const dots = document.querySelectorAll('#banner-dots span');
-  dots.forEach((dot, idx) => dot.classList.toggle('active', idx === currentBannerIndex));
+  const bannerImage = document.getElementById('banner-image');
+  bannerImage.src = bannerImages[currentBannerIndex];
 }
 
-function initBanner() {
-  const bannerDots = document.getElementById('banner-dots');
-  bannerDots.innerHTML = bannerImages.map(() => '<span></span>').join('');
-  bannerDots.querySelectorAll('span').forEach((dot, idx) =>
-    dot.addEventListener('click', () => {
-      currentBannerIndex = idx;
-      updateBanner();
-    })
-  );
+setInterval(() => {
+  currentBannerIndex = (currentBannerIndex + 1) % bannerImages.length;
   updateBanner();
-}
-initBanner();
+}, 5000);
 
-// Router
+/****************************************************************************/
+/* 3. Router SPA                                                            */
+/****************************************************************************/
 function router() {
-  const routes = {
-    '/': '<h1>Strona główna</h1><p>Witamy na stronie schroniska.</p>',
-    '/o-nas': '<h1>O nas</h1><p>Informacje o schronisku.</p>',
-    '/ogloszenia': '<h1>Ogłoszenia</h1><div id="announcements"></div>'
-  };
   const hash = window.location.hash.substring(1) || '/';
+  const routes = {
+    '/': '<h1>Witamy w Schronisku</h1><p>Strona główna.</p>',
+    '/o-nas': '<h1>O nas</h1><p>Informacje o nas.</p>',
+    '/ogloszenia': '<h1>Ogłoszenia</h1><div id="announcements"></div>',
+    '/login': '<h1>Logowanie</h1><div id="login-form"></div>',
+    '/logout': '<h1>Wylogowywanie...</h1>',
+  };
   document.getElementById('app').innerHTML = routes[hash] || '<h1>404 - Nie znaleziono</h1>';
   if (hash === '/ogloszenia') initAnnouncements();
+  if (hash === '/login') initLogin();
 }
+
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
 
-// Ogłoszenia
-function initAnnouncements() {
-  const announcementsDiv = document.getElementById('announcements');
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+/****************************************************************************/
+/* 4. Logowanie                                                             */
+/****************************************************************************/
+function initLogin() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div>
+      <label for="username">Nazwa użytkownika:</label>
+      <input type="text" id="username" />
+    </div>
+    <div>
+      <label for="password">Hasło:</label>
+      <input type="password" id="password" />
+    </div>
+    <button id="login-btn">Zaloguj</button>
+  `;
 
-  announcementsDiv.innerHTML = announcements
-    .map(
-      (item, idx) => `
-      <div class="announcement-item">
-        <h4>${item.name}</h4>
-        <p>${item.desc}</p>
-        <button class="remove-announcement-btn" onclick="removeAnnouncement(${idx})">Usuń</button>
-      </div>
-    `
-    )
+  document.getElementById('login-btn').addEventListener('click', () => {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (username === 'admin' && password === '1234') {
+      localStorage.setItem('isAdmin', 'true');
+      alert('Zalogowano pomyślnie');
+      window.location.hash = '/ogloszenia';
+    } else {
+      alert('Nieprawidłowe dane logowania');
+    }
+  });
+}
+
+/****************************************************************************/
+/* 5. Ogłoszenia                                                            */
+/****************************************************************************/
+function initAnnouncements() {
+  const app = document.getElementById('app');
+  app.innerHTML += `
+    <div>
+      <button id="add-announcement-btn">Dodaj ogłoszenie</button>
+    </div>
+    <div id="announcements-list"></div>
+  `;
+
+  document.getElementById('add-announcement-btn').addEventListener('click', () => {
+    const name = prompt('Podaj nazwę zwierzaka:');
+    const desc = prompt('Podaj opis zwierzaka:');
+    const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+    announcements.push({ name, desc });
+    localStorage.setItem('announcements', JSON.stringify(announcements));
+    renderAnnouncements();
+  });
+
+  renderAnnouncements();
+}
+
+function renderAnnouncements() {
+  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+  const list = document.getElementById('announcements-list');
+  list.innerHTML = announcements
+    .map((a) => `<div class="announcement-item"><h3>${a.name}</h3><p>${a.desc}</p></div>`)
     .join('');
 }
 
-function addAnnouncement() {
-  const name = prompt('Podaj nazwę zwierzaka:');
-  const desc = prompt('Podaj opis zwierzaka:');
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
-  announcements.push({ name, desc });
-  localStorage.setItem('announcements', JSON.stringify(announcements));
-  router();
-}
-
-function removeAnnouncement(index) {
-  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
-  announcements.splice(index, 1);
-  localStorage.setItem('announcements', JSON.stringify(announcements));
-  router();
-}
