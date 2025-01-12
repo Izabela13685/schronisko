@@ -1,77 +1,71 @@
-/* Ogólne style */
+/* Reset i ogólne style */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background-color: #f9f9f9;
   color: #333;
 }
 
-/* Baner cookies */
-#cookie-banner {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
-  color: white;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 9999;
-}
-#cookie-banner button {
-  background-color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-}
-
-/* Slider */
-#toolbar {
+header {
   text-align: center;
-}
-#banner img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Nawigacja */
-nav {
+  padding: 20px;
   background-color: #333;
   color: white;
-  text-align: center;
-  padding: 10px 0;
 }
+
+header h1 {
+  margin: 0;
+  font-size: 2em;
+}
+
+nav {
+  margin-top: 10px;
+}
+
 nav a {
   color: white;
   text-decoration: none;
   margin: 0 10px;
+  font-weight: bold;
 }
+
 nav a:hover {
   text-decoration: underline;
 }
 
-/* Sekcja główna */
-#app {
+main {
   max-width: 800px;
   margin: 20px auto;
-  background: white;
   padding: 20px;
+  background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Ogłoszenia */
-.announcement-item {
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
+footer {
+  text-align: center;
   padding: 10px;
-  border-radius: 5px;
-  background: #fafafa;
+  background-color: #333;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
 }
+
+footer .footer-right {
+  margin-top: 10px;
+}
+
+/* Ogłoszenia */
+#announcements-form-wrapper {
+  display: none;
+}
+
+#announcements-list {
+  margin-top: 20px;
+}
+
 .announcement-item img {
   max-width: 100%;
   border-radius: 5px;
