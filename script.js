@@ -1,6 +1,6 @@
-/****************************************************************************/
-/* 1. Baner cookies                                                         */
-/****************************************************************************/
+/******************************************************************************/
+/* 1. Baner cookies                                                           */
+/******************************************************************************/
 const cookieBanner = document.getElementById('cookie-banner');
 if (localStorage.getItem('cookieAccepted')) {
   cookieBanner.style.display = 'none';
@@ -11,9 +11,9 @@ if (localStorage.getItem('cookieAccepted')) {
   });
 }
 
-/****************************************************************************/
-/* 2. Slider (baner) – lokalne pliki JPG                                    */
-/****************************************************************************/
+/******************************************************************************/
+/* 2. Slider (baner) – lokalne pliki JPG                                      */
+/******************************************************************************/
 const bannerImages = [
   'img/pies01.jpg',
   'img/kot01.jpg',
@@ -44,26 +44,34 @@ function updateBanner() {
   });
 }
 
+// Możliwe automatyczne przełączanie co 5 sekund:
+// setInterval(() => {
+//   currentBannerIndex = (currentBannerIndex + 1) % bannerImages.length;
+//   updateBanner();
+// }, 5000);
+
 initBanner();
 
-/****************************************************************************/
-/* 3. Obsługa języka (PL / EN)                                              */
-/****************************************************************************/
+/******************************************************************************/
+/* 3. Obsługa języka (PL / EN)                                               */
+/******************************************************************************/
 function getLanguage() {
   return localStorage.getItem('lang') || 'pl';
 }
+
 function setLanguage(lang) {
   localStorage.setItem('lang', lang);
-  router(); // odśwież
+  router(); // odśwież zawartość
 }
+
 document.getElementById('language-select').addEventListener('change', e => {
   setLanguage(e.target.value);
 });
 document.getElementById('language-select').value = getLanguage();
 
-/****************************************************************************/
-/* 4. Teksty w 2 językach                                                   */
-/****************************************************************************/
+/******************************************************************************/
+/* 4. Teksty w 2 językach                                                    */
+/******************************************************************************/
 const texts = {
   pl: {
     routes: {
@@ -87,8 +95,8 @@ const texts = {
         <p>Możesz odwiedzić nasze schronisko pod poniższym adresem (mapa niżej).</p>
         <div class="map-container">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2442.181383507984!2d21.003928815803948!3d52.22967597975706!2m3!1f0!2f0!3f0!3m2
-                 !1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc9817262c17%3A0x744a38fe0a9a2dd6!2sPa%C5%82ac%20Kultury%20i%20Nauki!
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2442.181383507984!2d21.003928815803948!3d52.22967597975706!2m3!1f0!2f0!3f0!
+                 3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc9817262c17%3A0x744a38fe0a9a2dd6!2sPa%C5%82ac%20Kultury%20i%20Nauki!
                  5e0!3m2!1spl!2spl!4v1677760000000!5m2!1spl!2spl"
             width="600"
             height="450"
@@ -187,8 +195,8 @@ const texts = {
         <p>You can visit our shelter at the address below (map shown here).</p>
         <div class="map-container">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2442.181383507984!2d21.003928815803948!3d52.22967597975706!2m3!1f0!2f0!3f0!3m2
-                 !1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc9817262c17%3A0x744a38fe0a9a2dd6!2sPa%C5%82ac%20Kultury%20i%20Nauki!
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2442.181383507984!2d21.003928815803948!3d52.22967597975706!2m3!1f0!2f0!3f0!
+                 3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc9817262c17%3A0x744a38fe0a9a2dd6!2sPa%C5%82ac%20Kultury%20i%20Nauki!
                  5e0!3m2!1spl!2spl!4v1677760000000!5m2!1spl!2spl"
             width="600"
             height="450"
@@ -268,16 +276,16 @@ const texts = {
   }
 };
 
-/****************************************************************************/
-/* 5. Router SPA (obsługa hash)                                             */
-/****************************************************************************/
+/******************************************************************************/
+/* 5. Router SPA (obsługa hash)                                              */
+/******************************************************************************/
 function router() {
   const lang = getLanguage();
   let hash = window.location.hash.substring(1) || '/';
   const routeContent = texts[lang].routes[hash] || texts[lang].noRoute;
   document.getElementById('app').innerHTML = routeContent;
 
-  // Sprawdzamy, czy to podstrona login, logout, ogloszenia
+  // Sprawdzamy, czy to podstrona login, logout czy ogloszenia
   if (hash === 'login') {
     initLogin();
   } else if (hash === 'logout') {
@@ -290,32 +298,34 @@ function router() {
 window.addEventListener('hashchange', router);
 window.addEventListener('load', router);
 
-/****************************************************************************/
-/* 6. Admin – stan isAdmin w localStorage                                   */
-/****************************************************************************/
+/******************************************************************************/
+/* 6. Admin – stan isAdmin w localStorage                                    */
+/******************************************************************************/
 function isAdmin() {
   return localStorage.getItem('isAdmin') === 'true';
 }
+
 function performLogout() {
   localStorage.removeItem('isAdmin');
   window.location.hash = '/';
 }
 
-/****************************************************************************/
-/* 7. Logowanie (ukryte w menu)                                             */
-/****************************************************************************/
+/******************************************************************************/
+/* 7. Logowanie (ukryte w menu)                                              */
+/******************************************************************************/
 function initLogin() {
   const lang = getLanguage();
   const loginMessage = document.getElementById('login-message');
   const loginBtn = document.getElementById('admin-login-btn');
 
+  // Jeśli już zalogowany, wyświetlamy komunikat
   if (isAdmin()) {
     loginMessage.style.color = 'green';
     loginMessage.textContent = texts[lang].loginAlready;
     return;
   }
 
-  // admin / 1234
+  // Dane logowania: admin / 1234
   loginBtn.addEventListener('click', () => {
     const username = document.getElementById('admin-username').value;
     const password = document.getElementById('admin-password').value;
@@ -334,9 +344,9 @@ function initLogin() {
   });
 }
 
-/****************************************************************************/
-/* 8. Ogłoszenia – widoczne dla wszystkich, ale formularz tylko dla admina  */
-/****************************************************************************/
+/******************************************************************************/
+/* 8. Ogłoszenia – widoczne dla wszystkich, ale formularz tylko dla admina   */
+/******************************************************************************/
 function initAnnouncements() {
   const lang = getLanguage();
   const formWrapper = document.getElementById('announcements-form-wrapper');
@@ -353,7 +363,7 @@ function initAnnouncements() {
 
   renderAnnouncements();
 
-  // --------------- Funkcje wewnętrzne ---------------
+  // ----------------- Funkcje wewnętrzne -----------------
   function onAddAnnouncement() {
     const animalType = document.getElementById('animal-type').value;
     const animalName = document.getElementById('animal-name').value.trim();
@@ -366,7 +376,7 @@ function initAnnouncements() {
       return;
     }
 
-    // Konwersja pliku na Base64
+    // Konwersja pliku na Base64 (lokalnie w przeglądarce)
     const file = animalImageInput.files[0];
     const reader = new FileReader();
     reader.onload = function(evt) {
@@ -418,8 +428,11 @@ function initAnnouncements() {
         <h4>${item.name}
           <span class="announcement-category">(${item.type})</span>
         </h4>
-        <img src="${item.image}" alt="${item.name}"
-             style="max-width:100%; max-height:200px; display:block; margin-bottom:5px;">
+        <img 
+          src="${item.image}" 
+          alt="${item.name}" 
+          style="max-width:100%; max-height:200px; display:block; margin-bottom:5px;"
+        >
         <div class="announcement-description">${item.desc}</div>
         <div>Tel: <strong>${item.phone}</strong></div>
         <div class="announcement-date">
@@ -448,6 +461,7 @@ function initAnnouncements() {
     renderAnnouncements();
   }
 
+  // Zapis i odczyt ogłoszeń z LocalStorage
   function getAnnouncementsData() {
     const stored = localStorage.getItem('announcements');
     return stored ? JSON.parse(stored) : [];
@@ -457,28 +471,113 @@ function initAnnouncements() {
   }
 }
 
-/****************************************************************************/
-/* 9. POKAZYWANIE/UKRYWANIE LINKÓW (Logowanie / Wyloguj)                     */
-/****************************************************************************/
-function updateLoginLogoutLinks() {
-  const loginLink = document.getElementById('login-link');
-  const logoutLink = document.getElementById('logout-link');
+/******************************************************************************/
+/* 9. Kontroler AJAX / API (apiController)                                   */
+/******************************************************************************/
+/**
+ * Poniższy obiekt stanowi przykładowy „kontroler AJAX” (tzw. warstwę dostępu
+ * do API). Możesz go dostosować do swojego prawdziwego endpointu i wywołań.
+ */
+const apiController = {
+  // Adres bazowy do Twojego API
+  baseUrl: 'https://example.com/api',
 
-  if (!loginLink || !logoutLink) return;
+  /**
+   * GET /animals
+   */
+  getAnimals: function () {
+    return fetch(`${this.baseUrl}/animals`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Błąd HTTP: ${response.status}`);
+      }
+      return response.json();
+    });
+  },
 
-  if (isAdmin()) {
-    // Zalogowany -> schowaj „Logowanie”, pokaż „Wyloguj”
-    loginLink.style.display = 'none';
-    logoutLink.style.display = 'inline-block';
-  } else {
-    // Niezalogowany -> pokaż „Logowanie”, schowaj „Wyloguj”
-    loginLink.style.display = 'inline-block';
-    logoutLink.style.display = 'none';
+  /**
+   * GET /animals/:id
+   */
+  getAnimalById: function (id) {
+    return fetch(`${this.baseUrl}/animals/${id}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Błąd HTTP: ${response.status}`);
+      }
+      return response.json();
+    });
+  },
+
+  /**
+   * POST /animals
+   */
+  createAnimal: function (animalData) {
+    return fetch(`${this.baseUrl}/animals`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(animalData) // np. { name: 'Reksio', type: 'dog' }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Błąd HTTP: ${response.status}`);
+      }
+      return response.json();
+    });
+  },
+
+  /**
+   * PUT /animals/:id
+   */
+  updateAnimal: function (id, animalData) {
+    return fetch(`${this.baseUrl}/animals/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(animalData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Błąd HTTP: ${response.status}`);
+      }
+      return response.json();
+    });
+  },
+
+  /**
+   * DELETE /animals/:id
+   */
+  deleteAnimal: function (id) {
+    return fetch(`${this.baseUrl}/animals/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Błąd HTTP: ${response.status}`);
+      }
+      // W przypadku DELETE często jest np. 204 No Content
+      // zwracamy np. response.text() czy response.json() – zależnie od API
+      return response.text();
+    });
   }
-}
+};
 
-// Wywołujemy przy starcie i przy zmianie hasha
-window.addEventListener('load', updateLoginLogoutLinks);
-window.addEventListener('hashchange', updateLoginLogoutLinks);
 
 
