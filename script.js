@@ -1,31 +1,38 @@
-// Baner cookies
-const cookieBanner = document.getElementById('cookie-banner');
-if (localStorage.getItem('cookieAccepted')) {
-  cookieBanner.style.display = 'none';
-} else {
-  document.getElementById('cookie-button').addEventListener('click', () => {
-    localStorage.setItem('cookieAccepted', 'true');
-    cookieBanner.style.display = 'none';
-  });
-}
-
-// Router SPA
+/****************************************************************************/
+/* 1. Router SPA                                                            */
+/****************************************************************************/
 function router() {
   const app = document.getElementById('app');
   const routes = {
     '/': '<h1>Witamy w Schronisku "Druga Szansa"</h1><p>Nasza misja to pomoc zwierzętom w potrzebie.</p>',
-    '/o-nas': '<h1>O nas</h1><p>Schronisko "Druga Szansa" pomaga zwierzętom.</p>',
+    '/o-nas': '<h1>O nas</h1><p>Schronisko "Druga Szansa" powstało z myślą o pomocy zwierzętom w potrzebie.</p>',
     '/mapa': '<h1>Mapa dojazdu</h1><p>Adres: ul. Zwierzęca 1, 00-001 Miasto</p>',
     '/tworcy': '<h1>Twórcy strony</h1><p>Ernest 160788 i Izabela 160872</p>',
     '/ogloszenia': `
-      <h1>Ogłoszenia adopcyjne</h1>
-      <p>Aby dodać nowe ogłoszenie, zaloguj się jako administrator.</p>
+      <h1>Ogłoszenia</h1>
       <div id="announcements-form-wrapper">
-        <label for="animal-name">Imię:</label>
-        <input type="text" id="animal-name" />
-        <label for="animal-desc">Opis:</label>
-        <textarea id="animal-desc"></textarea>
-        <button id="add-announcement-btn">Dodaj ogłoszenie</button>
+        <form id="announcement-form">
+          <label for="animal-type">Rodzaj zwierzaka:</label>
+          <select id="animal-type">
+            <option value="Pies">Pies</option>
+            <option value="Kot">Kot</option>
+            <option value="Inne">Inne</option>
+          </select>
+
+          <label for="animal-name">Imię:</label>
+          <input type="text" id="animal-name" placeholder="Wpisz imię zwierzaka" required />
+
+          <label for="animal-desc">Opis:</label>
+          <textarea id="animal-desc" placeholder="Kilka słów o zwierzaku" required></textarea>
+
+          <label for="animal-phone">Telefon kontaktowy:</label>
+          <input type="text" id="animal-phone" placeholder="123 456 789" required />
+
+          <label for="animal-image">Zdjęcie zwierzaka:</label>
+          <input type="file" id="animal-image" accept="image/*" />
+
+          <button type="submit">Dodaj ogłoszenie</button>
+        </form>
       </div>
       <div id="announcements-list"></div>
     `,
@@ -37,52 +44,77 @@ function router() {
   if (hash === '/ogloszenia') initAnnouncements();
 }
 
+window.addEventListener('hashchange', router);
+window.addEventListener('load', router);
+
+/****************************************************************************/
+/* 2. Ogłoszenia                                                            */
+/****************************************************************************/
 function initAnnouncements() {
   const formWrapper = document.getElementById('announcements-form-wrapper');
+  const form = document.getElementById('announcement-form');
   const announcementsList = document.getElementById('announcements-list');
-  const addBtn = document.getElementById('add-announcement-btn');
 
-  // Pokaż formularz tylko dla administratora
+  // Pokazuj formularz tylko dla administratora
   if (localStorage.getItem('isAdmin') === 'true') {
     formWrapper.style.display = 'block';
   } else {
     formWrapper.style.display = 'none';
   }
 
-  addBtn.addEventListener('click', () => {
-    const name = document.getElementById('animal-name').value;
-    const desc = document.getElementById('animal-desc').value;
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
 
-    if (!name || !desc) {
-      alert('Wypełnij wszystkie pola!');
-      return;
+    const animalType = document.getElementById('animal-type').value;
+    const animalName = document.getElementById('animal-name').value.trim();
+    const animalDesc = document.getElementById('animal-desc').value.trim();
+    const animalPhone = document.getElementById('animal-phone').value.trim();
+    const animalImageInput = document.getElementById('animal-image');
+    let animalImage = '';
+
+    if (animalImageInput.files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        animalImage = e.target.result;
+        saveAnnouncement({ animalType, animalName, animalDesc, animalPhone, animalImage });
+      };
+      reader.readAsDataURL(animalImageInput.files[0]);
+    } else {
+      saveAnnouncement({ animalType, animalName, animalDesc, animalPhone, animalImage });
     }
-
-    const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
-    announcements.push({ name, desc });
-    localStorage.setItem('announcements', JSON.stringify(announcements));
-    renderAnnouncements();
   });
 
+  renderAnnouncements();
+}
+
+function saveAnnouncement(data) {
+  const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+  announcements.push(data);
+  localStorage.setItem('announcements', JSON.stringify(announcements));
   renderAnnouncements();
 }
 
 function renderAnnouncements() {
   const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
   const announcementsList = document.getElementById('announcements-list');
-  announcementsList.innerHTML = announcements
-    .map(
-      (a) => `
-      <div class="announcement-item">
-        <h3>${a.name}</h3>
-        <p>${a.desc}</p>
-      </div>
-    `
-    )
-    .join('');
-}
+  announcementsList.innerHTML = '';
 
-window.addEventListener('hashchange', router);
-window.addEventListener('load', router);
+  if (announcements.length === 0) {
+    announcementsList.innerHTML = '<p>Brak ogłoszeń do wyświetlenia.</p>';
+    return;
+  }
+
+  announcements.forEach((item) => {
+    const div = document.createElement('div');
+    div.classList.add('announcement-item');
+    div.innerHTML = `
+      <h3>${item.animalName} (${item.animalType})</h3>
+      <p>${item.animalDesc}</p>
+      <p>Kontakt: ${item.animalPhone}</p>
+      ${item.animalImage ? `<img src="${item.animalImage}" alt="${item.animalName}" style="max-width:200px;">` : ''}
+    `;
+    announcementsList.appendChild(div);
+  });
+}
 
 
